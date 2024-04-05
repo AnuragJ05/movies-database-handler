@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 
 	"github.com/AnuragJ05/database-handler/config"
 	"github.com/AnuragJ05/database-handler/util"
@@ -28,7 +29,7 @@ func main() {
 	defer db.Close()
 
 	//create the table if it doesn't exist
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS movies (id SERIAL PRIMARY KEY, isbn TEXT, title TEXT, director TEXT)")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS movies (id SERIAL PRIMARY KEY, isbn TEXT, title TEXT, director TEXT, timestamp TEXT)")
 
 	if err != nil {
 		log.Fatal(err)
@@ -37,9 +38,16 @@ func main() {
 	//create router
 	r := mux.NewRouter() // function from gorila
 	r.HandleFunc("/movies", util.GetMovies(db)).Methods("GET")
-	r.HandleFunc("/movies", util.CreateMovie(db)).Methods("POST")
+	r.HandleFunc("/movies", util.CreateMovie).Methods("POST")
 
-	fmt.Println("Starting servr at port /5000")
-	http.ListenAndServe(":5000", r)
+	fmt.Println("Starting serve at port /5000")
+	go http.ListenAndServe(":5000", r)
 
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go util.UpdateDBFromFile(&wg, db)
+
+	wg.Wait()
+
+	fmt.Println("END")
 }
