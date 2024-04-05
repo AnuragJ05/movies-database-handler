@@ -46,7 +46,7 @@ func GetMovies(db *sql.DB) http.HandlerFunc {
 		models := []model.Movie{}
 		for rows.Next() {
 			var m model.Movie
-			if err := rows.Scan(&m.ID, &m.Isbn, &m.Title, &m.Director); err != nil {
+			if err := rows.Scan(&m.ID, &m.Isbn, &m.Title, &m.Director, &m.Timestamp); err != nil {
 				log.Fatal(err)
 			}
 			models = append(models, m)
