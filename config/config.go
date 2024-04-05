@@ -6,16 +6,11 @@ import (
 	"os"
 )
 
-var CONFIGURATIONS map[string]string = map[string]string{
-	"DATABASE_URL": "dbname=server sslmode=disable",
-}
-
 func InitDB() (*sql.DB, error) {
-	if os.Getenv("DATABASE_URL") == "" {
-		os.Setenv("DATABASE_URL", CONFIGURATIONS["DATABASE_URL"])
-	}
 
-	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	connStrMain := "user=postgres password=postgres dbname=postgres sslmode=disable"
+	db, err := sql.Open("postgres", connStrMain)
+
 	if err != nil {
 		return nil, err
 	}
