@@ -16,7 +16,7 @@ Utilizes Gorilla Mux for routing.
 
 ## Prerequisites
 
-Go (1.16+)
+Go (1.21+)
 
 Docker and Docker Compose
 
@@ -45,7 +45,7 @@ docker-compose up -d
 4. Run the application:
 
 ```
-go run main.go
+go run movies-database-handler.go
 ```
 
 ## Usage
