@@ -49,7 +49,11 @@ docker-compose up --build
 To create a new movie, send a POST request to the /movies endpoint with a JSON payload containing the movie details:
 
 ```
-curl -X POST -d '{"isbn":"ISBN 0-061-96436-0", "title":"marvel movie", "director": "anurag jain"}' -H "Content-Type: application/json" http://10.239.40.166:5000/movies
+curl -X POST -d '{"isbn":"ISBN 0-061-96436-0", "title":"RRR", "director": "S. S. Rajamouli"}' -H "Content-Type: application/json" http://localhost:5000/movies
+
+curl -X POST -d '{"isbn":"ISBN 0-011-12436-1", "title":"SOTY", "director": "karan johar"}' -H "Content-Type: application/json" http://localhost:5000/movies
+
+curl -X POST -d '{"isbn":"ISBN 1-011-22431-2", "title":"PK", "director": "Rajkumar Hirani"}' -H "Content-Type: application/json" http://localhost:5000/movies
 ```
 
 ### Retrieve movies
@@ -57,6 +61,6 @@ curl -X POST -d '{"isbn":"ISBN 0-061-96436-0", "title":"marvel movie", "director
 To retrieve all movies, send a GET request to the /movies endpoint:
 
 ```
-curl -X GET http://10.239.40.166:5000/movies
+curl -X GET http://localhost:5000/movies
 ```
 
