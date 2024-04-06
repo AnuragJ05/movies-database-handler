@@ -64,3 +64,21 @@ To retrieve all movies, send a GET request to the /movies endpoint:
 curl -X GET http://localhost:5000/movies
 ```
 
+## Check the Data updated in the database
+
+```
+Exec inside contanier
+    docker exec -it <container id> sh
+
+Interact with PostgreSQL databases via the command line
+    psql -h localhost -p 5432 -U postgres --dbname=postgres
+
+List the Database
+    \l
+
+List the Table
+    \dt
+
+List the data from table
+    select * from movies;
+```
