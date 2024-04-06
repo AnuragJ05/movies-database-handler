@@ -3,6 +3,8 @@
 
 This project is a simple API for managing a movies database, built using Go and the Gorilla Mux library. It provides two endpoints for creating and retrieving movies.
 
+![Golang SDE Assignment-2](https://github.com/AnuragJ05/movies-database-handler/assets/46484628/d31d446c-3d0b-4258-8e84-872bbafa52db)
+
 
 ## Features
 
