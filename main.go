@@ -1,25 +1,24 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"movies-database-handler/config"
+	"movies-database-handler/util"
 	"net/http"
 	"sync"
 
-	"github.com/AnuragJ05/database-handler/util"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
 // main is the entry point of the Go program.
 //
-// It connects to the database, creates a table if it doesn't exist, and sets up
-// the router to handle different HTTP methods for the "/users" endpoint.
-// Finally, it starts the server and listens for incoming requests on port 8000.
+// It initializes the database connection, creates the necessary table if it doesn't exist,
+// creates a router for handling HTTP requests, starts the server on port 5000,
+// and updates the database from a file in the background.
+//
+// The function does not take any parameters and does not return any values.
 func main() {
-
-	// port := os.Getenv("PORT")
 
 	// connect to database
 	db, err := config.InitDB()
@@ -30,24 +29,22 @@ func main() {
 
 	//create the table if it doesn't exist
 	_, err = db.Exec("CREATE TABLE IF NOT EXISTS movies (id SERIAL PRIMARY KEY, isbn TEXT, title TEXT, director TEXT, timestamp TEXT)")
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	//create router
-	r := mux.NewRouter() // function from gorila
-	r.HandleFunc("/movies", util.GetMovies(db)).Methods("GET")
-	r.HandleFunc("/movies", util.CreateMovie).Methods("POST")
+	//create router for handling HTTP requests
+	r := mux.NewRouter()                                       // NewRouter returns a new Gorilla Mux router
+	r.HandleFunc("/movies", util.GetMovies(db)).Methods("GET") // GetMovies is a handler function that returns a list of movies.
+	r.HandleFunc("/movies", util.CreateMovie).Methods("POST")  // CreateMovie is a handler function that creates a new movie.
 
-	fmt.Println("Starting serve at port /5000")
+	log.Println("Server started on port 5000")
 	go http.ListenAndServe(":5000", r)
 
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go util.UpdateDBFromFile(&wg, db)
-
 	wg.Wait()
 
-	fmt.Println("END")
+	log.Panicln("Server stopped on port 5000")
 }

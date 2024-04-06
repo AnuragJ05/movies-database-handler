@@ -16,3 +16,6 @@ docker-build:
 # Push the docker image
 docker-push:
 	docker push ${IMG}
+
+docker-compose:
+	docker-compose up --build

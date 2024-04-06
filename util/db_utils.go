@@ -3,19 +3,27 @@ package util
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
 
-	model "github.com/AnuragJ05/database-handler/model"
+	model "movies-database-handler/model"
+
 	_ "github.com/lib/pq"
 )
 
+// UpdateDBFromFile updates the database from a file.
+//
+// It takes a pointer to a sync.WaitGroup and a pointer to a sql.DB as parameters.
+// The function continuously monitors the "/tmp/astra/" directory for the latest file created.
+// When a new file is detected, it reads the JSON data from the file and inserts the data into the "movies" table in the database.
+// The function logs the latest file created and the movie added to the database.
+// The function runs indefinitely until it is stopped.
 func UpdateDBFromFile(wgGlobal *sync.WaitGroup, db *sql.DB) {
+
 	defer wgGlobal.Done()
 	lastFile := ""
 	for {
@@ -35,20 +43,21 @@ func UpdateDBFromFile(wgGlobal *sync.WaitGroup, db *sql.DB) {
 		if lastFile != latestFile {
 			lastFile = latestFile
 
+			log.Println("Latest file created:", latestFile)
+
 			// Open JSON file
 			file, err := os.Open(latestFile)
 			if err != nil {
 				log.Fatal(err)
 			}
-			defer file.Close()
 
 			// Read JSON data from file
-			jsonData, err := ioutil.ReadAll(file)
+			jsonData, err := io.ReadAll(file)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			// Unmarshal JSON data into a slice of Movie structs
+			// Unmarshal JSON data into Movie struct
 			var movie model.Movie
 			if err := json.Unmarshal(jsonData, &movie); err != nil {
 				log.Fatal(err)
@@ -58,7 +67,8 @@ func UpdateDBFromFile(wgGlobal *sync.WaitGroup, db *sql.DB) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println("Inserted:", movie.Title)
+			file.Close()
+			log.Println("Movie added to database:", movie.Title)
 
 		}
 
@@ -66,6 +76,12 @@ func UpdateDBFromFile(wgGlobal *sync.WaitGroup, db *sql.DB) {
 
 }
 
+// findLatestFile finds the latest modified file in the given directory and sends its path to the provided channel.
+//
+// Parameters:
+// - dir: the directory to search for the latest file.
+// - wg: a pointer to a sync.WaitGroup used for synchronization.
+// - ch: a channel of type string to send the path of the latest file.
 func findLatestFile(dir string, wg *sync.WaitGroup, ch chan<- string) {
 	defer wg.Done()
 
@@ -84,7 +100,7 @@ func findLatestFile(dir string, wg *sync.WaitGroup, ch chan<- string) {
 	})
 
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal("Error:", err)
 		return
 	}
 

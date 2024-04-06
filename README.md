@@ -36,17 +36,11 @@ git clone https://github.com/your-username/movies-database-handler.git
 cd movies-database-handler
 ```
 
-3. Build and start the PostgreSQL container using Docker Compose:
+3. Build and start the PostgreSQL container and go app using Docker Compose:
 ```
-docker-compose build
-docker-compose up -d
+docker-compose up --build
 ```
 
-4. Run the application:
-
-```
-go run movies-database-handler.go
-```
 
 ## Usage
 

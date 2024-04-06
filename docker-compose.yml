@@ -33,7 +33,6 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres123
 
-
 volumes:
   database_dockerizing:
   api_volume:
