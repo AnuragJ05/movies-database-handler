@@ -1,20 +1,21 @@
-# use official Golang image
-FROM golang:1.16.3-alpine3.13
+# Use official Golang image for building the Go application
+FROM golang:latest
 
-# set working directory
-WORKDIR /workspace
+WORKDIR /app
 
-# Copy the source code
-COPY . . 
+COPY . .
 
-# Download and install the dependencies
-RUN go get -d -v ./...
+# Remove existing go.mod and go.sum
+RUN rm go.mod go.sum
+
+# Initialize and tidy Go modules
+RUN go mod init movies-database-handler && go mod tidy
 
 # Build the Go app
-RUN go build .
+RUN go build -o movies-database-handler .
 
-#EXPOSE the port
-EXPOSE 8000
+RUN mkdir /tmp/astra/
 
-# Run the executable
-CMD ["./database-handler"]
+EXPOSE 5000
+
+CMD ["./movies-database-handler"]

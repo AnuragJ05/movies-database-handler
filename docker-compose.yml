@@ -1,27 +1,43 @@
-version: '3.9'
+version: '3'
 
 services:
-  go-app:
-    container_name: go-app
-    image: francescoxx/go-app:1.0.0
-    build: .
-    environment:
-      DATABASE_URL: "host=go_db user=postgres password=postgres dbname=postgres sslmode=disable"
+  postgres:
+    image: postgres:latest
+    container_name: postgres_dockerizing
     ports:
-      - "8000:8000"
-    depends_on:
-      - go_db
-  go_db:
-    container_name: go_db
-    image: postgres:12
+      - 5432:5432
+    restart: always
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-    ports:
-      - "5432:5432"
+      POSTGRES_PASSWORD: postgres123
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - database_dockerizing:/var/lib/postgresql/data
+      - ./dbshell:/docker-entrypoint-initdb.d/
+    networks:
+      - fullstack
+  api:
+    container_name: api_dockerizing
+    build: .
+    ports:
+      - 5000:5000
+    restart: always
+    volumes:
+      - api_volume:/usr/src/app/
+    depends_on:
+      - postgres
+    networks:
+      - fullstack
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres123
 
-volumes:  
-  pgdata: {}    
+
+volumes:
+  database_dockerizing:
+  api_volume:
+
+networks:
+  fullstack:
+    driver: bridge

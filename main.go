@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
+	"movies-database-handler/config"
 	"net/http"
 	"sync"
 
-	"github.com/AnuragJ05/database-handler/config"
 	"github.com/AnuragJ05/database-handler/util"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
