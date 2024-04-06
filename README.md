@@ -29,7 +29,7 @@ PostgreSQL (installed via Docker Compose)
 1. Clone the repository:
 
 ```
-git clone https://github.com/your-username/movies-database-handler.git
+git clone https://github.com/AnuragJ05/movies-database-handler.git
 ```
 
 2. Navigate to the project directory:
